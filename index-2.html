@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sugar &amp; Plum Cake Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="logo" href="#home">Sugar &amp; Plum</a>
+    <nav>
+      <a href="#menu">Cakes</a>
+      <a href="#order">Your order <span id="count" class="badge">0</span></a>
+      <a href="#visit">Visit</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-text">
+        <h1>Cakes baked this morning, for your table tonight.</h1>
+        <p>Butter, real fruit and slow-whipped cream. Order a whole cake online and pick it up warm from our counter.</p>
+        <a class="btn" href="#menu">See the cakes</a>
+      </div>
+      <div class="hero-art" id="heroArt"></div>
+    </section>
+
+    <section id="menu" class="wrap">
+      <h2>Our cakes</h2>
+      <div class="filters" id="filters">
+        <button class="chip active" data-cat="all">All</button>
+        <button class="chip" data-cat="fruit">Fruit</button>
+        <button class="chip" data-cat="chocolate">Chocolate</button>
+        <button class="chip" data-cat="classic">Classic</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section id="order" class="wrap order">
+      <h2>Your order</h2>
+      <ul id="items" class="items"></ul>
+      <p class="total">Total: <strong id="total">$0.00</strong></p>
+      <form id="form">
+        <label>Name <input name="name" required></label>
+        <label>Phone <input name="phone" type="tel" required></label>
+        <label>Pickup date <input name="date" type="date" required></label>
+        <button class="btn" type="submit">Place order</button>
+      </form>
+      <p id="msg" role="status"></p>
+    </section>
+  </main>
+
+  <footer id="visit" class="foot">
+    <p><strong>Sugar &amp; Plum Cake Shop</strong></p>
+    <p>14 Baker Lane &middot; Open Tue&ndash;Sun, 8am&ndash;6pm</p>
+    <p>hello@sugarandplum.example &middot; 555-0142</p>
+  </footer>
+
+  <script>
+// Cake data. "top" picks the decoration drawn on each cake picture.
+const cakes = [
+  { id: 1, name: "Strawberry Cream Cake", cat: "fruit", price: 38, top: "berries", sponge: "#f7dca6", filling: "#ff9db8", frosting: "#fff4f6", desc: "Vanilla sponge, fresh strawberries and whipped cream." },
+  { id: 2, name: "Triple Chocolate Cake", cat: "chocolate", price: 42, top: "choc", sponge: "#5a3220", filling: "#8a5a3c", frosting: "#3b1f14", desc: "Dark chocolate sponge with silky ganache." },
+  { id: 3, name: "Lemon Drizzle Cake", cat: "fruit", price: 34, top: "lemon", sponge: "#ffe9a8", filling: "#ffd24d", frosting: "#fffbe3", desc: "Zesty lemon sponge with a sharp, sweet glaze." },
+  { id: 4, name: "Pistachio Rose Cake", cat: "classic", price: 46, top: "pista", sponge: "#d7ebcf", filling: "#a5cf9a", frosting: "#f6e3ea", desc: "Ground pistachio layers with rose buttercream." },
+  { id: 5, name: "Classic Vanilla Birthday", cat: "classic", price: 36, top: "candle", sponge: "#fbe3b0", filling: "#f3b6c8", frosting: "#ffffff", desc: "Our birthday favorite, candles included." },
+  { id: 6, name: "Red Velvet Cake", cat: "classic", price: 40, top: "berries", sponge: "#b3213f", filling: "#fff4f0", frosting: "#fff8f3", desc: "Cocoa-kissed red sponge with cream cheese frosting." }
+];
+
+// Draws a cake picture as SVG, so no image files are needed.
+function cakeSVG(c) {
+  const drips = [52, 80, 112, 142].map((x, i) =>
+    `<rect x="${x - 6}" y="76" width="12" height="${22 + (i % 2) * 10}" rx="6" fill="${c.frosting}"/>`).join("");
+  let top = "";
+  if (c.top === "berries") top = [78, 100, 122].map(x => `<circle cx="${x}" cy="58" r="9" fill="#d81f4b"/><circle cx="${x - 3}" cy="55" r="1.8" fill="#ffd0da"/>`).join("") + `<path d="M90 44q10-10 20 0" stroke="#4c9a5a" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  if (c.top === "choc") top = [66, 88, 112, 134].map((x, i) => `<rect x="${x - 7}" y="${48 + (i % 2) * 5}" width="14" height="22" rx="7" fill="#7a4a2e" transform="rotate(${i * 12 - 18} ${x} 60)"/>`).join("");
+  if (c.top === "lemon") top = `<circle cx="100" cy="56" r="17" fill="#ffd93d" stroke="#fff" stroke-width="4"/><path d="M100 39v34M83 56h34M88 44l24 24M112 44L88 68" stroke="#fff" stroke-width="2"/>`;
+  if (c.top === "pista") top = [74, 92, 110, 128].map((x, i) => `<circle cx="${x}" cy="${60 - (i % 2) * 6}" r="6" fill="#6aa66d"/>`).join("") + `<circle cx="100" cy="52" r="9" fill="#e07a9b"/>`;
+  if (c.top === "candle") top = `<rect x="96" y="38" width="8" height="24" rx="2" fill="#c9275f"/><path d="M100 22c8 8 6 14 0 14s-8-6 0-14z" fill="#ffb300"/>`;
+  return `<svg viewBox="0 0 200 180" role="img" aria-label="${c.name}">
+    <ellipse cx="100" cy="158" rx="88" ry="12" fill="#e9c7d2" opacity=".6"/>
+    <rect x="36" y="76" width="128" height="78" rx="12" fill="${c.sponge}"/>
+    <rect x="36" y="110" width="128" height="10" fill="${c.filling}"/>
+    <rect x="30" y="66" width="140" height="24" rx="12" fill="${c.frosting}"/>
+    ${drips}${top}
+  </svg>`;
+}
+
+const cart = {};
+const $ = id => document.getElementById(id);
+const money = n => "$" + n.toFixed(2);
+
+function renderMenu(cat = "all") {
+  $("grid").innerHTML = cakes.filter(c => cat === "all" || c.cat === cat).map(c => `
+    <article class="card">
+      <div class="pic">${cakeSVG(c)}</div>
+      <div class="body">
+        <h3>${c.name}</h3>
+        <p>${c.desc}</p>
+        <div class="row"><span class="price">${money(c.price)}</span>
+        <button class="btn" data-add="${c.id}">Add to order</button></div>
+      </div>
+    </article>`).join("");
+}
+
+function renderCart() {
+  const ids = Object.keys(cart);
+  $("items").innerHTML = ids.length ? ids.map(id => {
+    const c = cakes.find(k => k.id == id);
+    return `<li><span>${c.name} &times; ${cart[id]}</span>
+      <span>${money(c.price * cart[id])}
+      <button data-remove="${id}" aria-label="Remove one ${c.name}">&minus;</button></span></li>`;
+  }).join("") : `<li class="empty">Your order is empty. Pick a cake above.</li>`;
+  const total = ids.reduce((s, id) => s + cakes.find(k => k.id == id).price * cart[id], 0);
+  $("total").textContent = money(total);
+  $("count").textContent = ids.reduce((s, id) => s + cart[id], 0);
+}
+
+document.addEventListener("click", e => {
+  const add = e.target.dataset.add, rem = e.target.dataset.remove, cat = e.target.dataset.cat;
+  if (add) { cart[add] = (cart[add] || 0) + 1; renderCart(); }
+  if (rem) { if (--cart[rem] <= 0) delete cart[rem]; renderCart(); }
+  if (cat) {
+    document.querySelectorAll(".chip").forEach(b => b.classList.toggle("active", b === e.target));
+    renderMenu(cat);
+  }
+});
+
+$("form").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!Object.keys(cart).length) { $("msg").textContent = "Add at least one cake before placing your order."; return; }
+  const f = new FormData(e.target);
+  $("msg").textContent = `Thank you, ${f.get("name")}! Your order is placed for pickup on ${f.get("date")}.`;
+  Object.keys(cart).forEach(k => delete cart[k]);
+  renderCart();
+  e.target.reset();
+});
+
+// Hero picture: the birthday cake, drawn large.
+$("heroArt").innerHTML = cakeSVG(cakes[4]);
+renderMenu();
+renderCart();
+</script>
+</body>
+</html>

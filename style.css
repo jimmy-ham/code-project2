@@ -1,0 +1,71 @@
+:root {
+  --bg: #fff7fa;
+  --ink: #3a1f2b;
+  --berry: #c9275f;
+  --pista: #cfe6d3;
+  --butter: #ffe9a8;
+  --blush: #ffd9e4;
+  --line: #f0cfdb;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #2a1620; --ink: #ffeaf1; --line: #5a3345; }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Nunito", system-ui, sans-serif; line-height: 1.6; }
+h1, h2, .logo { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--berry); outline-offset: 2px; }
+
+.top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1rem 5vw; position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line); z-index: 5; }
+.logo { font-size: 1.6rem; text-decoration: none; color: var(--berry); }
+nav a { margin-left: 1.2rem; text-decoration: none; font-weight: 600; }
+nav a:hover { color: var(--berry); }
+.badge { display: inline-block; min-width: 1.4rem; text-align: center; background: var(--berry); color: #fff; border-radius: 999px; font-size: .8rem; padding: 0 .4rem; }
+
+.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2rem; align-items: center; padding: 4rem 5vw; background: var(--blush); }
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.1; margin: 0 0 1rem; color: #3a1f2b; }
+.hero p { max-width: 46ch; color: #3a1f2b; font-size: 1.1rem; }
+.hero-art { background: var(--butter); border-radius: 50% 50% 8% 8%; padding: 2rem; }
+.hero-art svg { width: 100%; height: auto; display: block; }
+
+.btn { display: inline-block; background: var(--berry); color: #fff; border: 0; padding: .8rem 1.6rem; border-radius: 999px; font: 800 1rem "Nunito", sans-serif; text-decoration: none; cursor: pointer; }
+.btn:hover { background: #a81d4e; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 4rem 5vw 1rem; }
+h2 { font-size: 2.2rem; margin: 0 0 1rem; }
+
+.filters { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.chip { border: 2px solid var(--line); background: transparent; color: var(--ink); padding: .4rem 1rem; border-radius: 999px; font: 600 .95rem "Nunito", sans-serif; cursor: pointer; }
+.chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
+.card { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+.card .pic { padding: 1rem 1.5rem 0; }
+.card .pic svg { width: 100%; height: auto; display: block; }
+.card .body { padding: 1rem 1.2rem 1.2rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+.card h3 { margin: 0; font-family: "DM Serif Display", Georgia, serif; font-weight: 400; font-size: 1.35rem; }
+.card p { margin: 0; font-size: .95rem; flex: 1; }
+.card .row { display: flex; justify-content: space-between; align-items: center; margin-top: .6rem; }
+.price { font-weight: 800; font-size: 1.1rem; }
+.card .btn { padding: .5rem 1.1rem; font-size: .9rem; }
+
+.order { padding-bottom: 4rem; max-width: 640px; }
+.items { list-style: none; padding: 0; margin: 0; }
+.items li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .6rem 0; border-bottom: 1px solid var(--line); }
+.items button { border: 1px solid var(--line); background: transparent; color: var(--ink); width: 2rem; height: 2rem; border-radius: 50%; font-size: 1.1rem; cursor: pointer; }
+.empty { color: var(--ink); opacity: .7; }
+.total { font-size: 1.2rem; text-align: right; }
+form { display: grid; gap: .9rem; margin-top: 1rem; }
+label { display: grid; gap: .25rem; font-weight: 600; }
+input { padding: .7rem .9rem; border: 2px solid var(--line); border-radius: 10px; background: transparent; color: var(--ink); font: inherit; }
+#msg { font-weight: 800; color: var(--berry); }
+
+.foot { background: var(--ink); color: var(--bg); text-align: center; padding: 2.5rem 5vw; }
+.foot p { margin: .2rem 0; }
+
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; padding: 2.5rem 5vw; }
+  nav a { margin: 0 1rem 0 0; }
+}
